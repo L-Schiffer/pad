@@ -108,7 +108,7 @@ export function BookingModal({ isOpen, onClose, onSubmit }: BookingModalProps) {
             </select>
           </div>
 
-          <div>
+          <div className="w-1/2">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Datum
             </label>
@@ -134,9 +134,9 @@ export function BookingModal({ isOpen, onClose, onSubmit }: BookingModalProps) {
                 required
               >
                 <option value="">Wählen Sie eine Zeit</option>
-                {Array.from({ length: 96 }, (_, i) => {
-                  const hours = Math.floor(i / 4);
-                  const minutes = (i % 4) * 15;
+                {Array.from({ length: 64 }, (_, i) => {
+                  const hours = Math.floor((i + 32) / 4);
+                  const minutes = ((i + 32) % 4) * 15;
                   const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
                   return (
                     <option key={timeString} value={timeString}>
@@ -157,9 +157,9 @@ export function BookingModal({ isOpen, onClose, onSubmit }: BookingModalProps) {
                 required
               >
                 <option value="">Wählen Sie eine Zeit</option>
-                {Array.from({ length: 96 }, (_, i) => {
-                  const hours = Math.floor(i / 4);
-                  const minutes = (i % 4) * 15;
+                {Array.from({ length: 64 }, (_, i) => {
+                  const hours = Math.floor((i + 32) / 4);
+                  const minutes = ((i + 32) % 4) * 15;
                   const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
                   return (
                     <option key={timeString} value={timeString}>

@@ -134,7 +134,7 @@ function App() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Padel Court Buchungen</h1>
-          <p className="text-gray-600">Verwalte deine Padel-Spieltermine</p>
+          <p className="text-gray-600">Padel Buchungen Level 2.5</p>
         </div>
 
         <div className="mb-6">
