@@ -16,23 +16,13 @@ function App() {
   useEffect(() => {
     fetchBookings();
 
-    const subscription = supabase
-      .channel('bookings-channel')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'bookings',
-        },
-        () => {
-          fetchBookings();
-        }
-      )
-      .subscribe();
+    // Polling: Daten jede Sekunde neu laden
+    const intervalId = setInterval(() => {
+      fetchBookings();
+    }, 1000); // 1000ms = 1 Sekunde
 
     return () => {
-      subscription.unsubscribe();
+      clearInterval(intervalId);
     };
   }, []);
 
