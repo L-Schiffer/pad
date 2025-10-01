@@ -1,0 +1,119 @@
+import { Trash2, X } from 'lucide-react';
+import { Booking } from '../lib/supabase';
+
+type BookingTableProps = {
+  bookings: Booking[];
+  onSlotClick: (bookingId: string, slotNumber: number) => void;
+  onDelete: (bookingId: string) => void;
+  onRemoveFromSlot: (bookingId: string, slotNumber: number) => void;
+};
+
+export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot }: BookingTableProps) {
+  const formatDateTime = (startTime: string, endTime: string) => {
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+
+    const dateStr = start.toLocaleDateString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+
+    const startTimeStr = start.toLocaleTimeString('de-DE', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    const endTimeStr = end.toLocaleTimeString('de-DE', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    return `${dateStr} ${startTimeStr}–${endTimeStr}`;
+  };
+
+  const handleDelete = (bookingId: string) => {
+    if (confirm('Möchten Sie diesen Eintrag wirklich löschen?')) {
+      onDelete(bookingId);
+    }
+  };
+
+  const renderSlot = (booking: Booking, slotNumber: number) => {
+    const slotName = booking[`slot_${slotNumber}` as keyof Booking] as string | null;
+
+    if (slotName) {
+      return (
+        <div className="flex items-center justify-center gap-2">
+          <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm">
+            {slotName}
+          </span>
+          <button
+            onClick={() => onRemoveFromSlot(booking.id, slotNumber)}
+            className="text-red-500 hover:text-red-700 transition-colors p-1"
+            title="Austragen"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <button
+        onClick={() => onSlotClick(booking.id, slotNumber)}
+        className="px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded text-sm font-medium transition-colors"
+      >
+        Frei
+      </button>
+    );
+  };
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-md">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Datum</th>
+            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Ort</th>
+            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Slot 1</th>
+            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Slot 2</th>
+            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Slot 3</th>
+            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Slot 4</th>
+            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Aktionen</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200">
+          {bookings.length === 0 ? (
+            <tr>
+              <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                Keine Einträge vorhanden
+              </td>
+            </tr>
+          ) : (
+            bookings.map((booking) => (
+              <tr key={booking.id} className="hover:bg-gray-50 transition-colors">
+                <td className="px-4 py-3 text-sm text-gray-900">
+                  {formatDateTime(booking.start_time, booking.end_time)}
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-700">{booking.location}</td>
+                <td className="px-4 py-3 text-center">{renderSlot(booking, 1)}</td>
+                <td className="px-4 py-3 text-center">{renderSlot(booking, 2)}</td>
+                <td className="px-4 py-3 text-center">{renderSlot(booking, 3)}</td>
+                <td className="px-4 py-3 text-center">{renderSlot(booking, 4)}</td>
+                <td className="px-4 py-3 text-center">
+                  <button
+                    onClick={() => handleDelete(booking.id)}
+                    className="text-red-500 hover:text-red-700 transition-colors p-2"
+                    title="Eintrag löschen"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
