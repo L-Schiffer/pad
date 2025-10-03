@@ -10,6 +10,7 @@ type BookingModalProps = {
     endTime: string;
     createdBy: string;
     addToSlot1: boolean;
+    cost: number;
   }) => void;
 };
 
@@ -20,6 +21,7 @@ export function BookingModal({ isOpen, onClose, onSubmit }: BookingModalProps) {
   const [endTime, setEndTime] = useState('');
   const [createdBy, setCreatedBy] = useState('');
   const [addToSlot1, setAddToSlot1] = useState(true);
+  const [cost, setCost] = useState(10);
   const [error, setError] = useState('');
 
   if (!isOpen) return null;
@@ -57,6 +59,7 @@ export function BookingModal({ isOpen, onClose, onSubmit }: BookingModalProps) {
       endTime: endDateTime.toISOString(),
       createdBy: createdBy.trim(),
       addToSlot1,
+      cost,
     });
 
     setLocation('Uni Köln');
@@ -65,6 +68,7 @@ export function BookingModal({ isOpen, onClose, onSubmit }: BookingModalProps) {
     setEndTime('');
     setCreatedBy('');
     setAddToSlot1(true);
+    setCost(10);
     setError('');
   };
 
@@ -173,7 +177,7 @@ export function BookingModal({ isOpen, onClose, onSubmit }: BookingModalProps) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Ihr Name
+              Wer hat den Platz gebucht?
             </label>
             <input
               type="text"
@@ -183,6 +187,23 @@ export function BookingModal({ isOpen, onClose, onSubmit }: BookingModalProps) {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Kosten
+            </label>
+            <select
+              value={cost}
+              onChange={(e) => setCost(Number(e.target.value))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {[10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map((amount) => (
+                <option key={amount} value={amount}>
+                  {amount}€
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="flex items-center">

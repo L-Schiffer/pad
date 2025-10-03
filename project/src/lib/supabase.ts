@@ -16,4 +16,5 @@ export type Booking = {
   slot_4: string | null;
   created_by: string;
   created_at: string;
+  cost: number;
 };

@@ -13,6 +13,10 @@ export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot
     const start = new Date(startTime);
     const end = new Date(endTime);
 
+    const weekday = start.toLocaleDateString('de-DE', {
+      weekday: 'long',
+    });
+
     const dateStr = start.toLocaleDateString('de-DE', {
       day: '2-digit',
       month: '2-digit',
@@ -29,7 +33,7 @@ export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot
       minute: '2-digit',
     });
 
-    return `${dateStr} ${startTimeStr}–${endTimeStr}`;
+    return `${weekday}, ${dateStr} ${startTimeStr}–${endTimeStr}`;
   };
 
   const handleDelete = (bookingId: string) => {
@@ -75,6 +79,8 @@ export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot
           <tr>
             <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Datum</th>
             <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Ort</th>
+            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Gebucht von</th>
+            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Kosten</th>
             <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Slot 1</th>
             <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Slot 2</th>
             <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Slot 3</th>
@@ -85,7 +91,7 @@ export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot
         <tbody className="divide-y divide-gray-200">
           {bookings.length === 0 ? (
             <tr>
-              <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+              <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
                 Keine Einträge vorhanden
               </td>
             </tr>
@@ -96,6 +102,8 @@ export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot
                   {formatDateTime(booking.start_time, booking.end_time)}
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-700">{booking.location}</td>
+                <td className="px-4 py-3 text-sm text-gray-700">{booking.created_by}</td>
+                <td className="px-4 py-3 text-center text-sm font-semibold text-gray-900">{booking.cost}€</td>
                 <td className="px-4 py-3 text-center">{renderSlot(booking, 1)}</td>
                 <td className="px-4 py-3 text-center">{renderSlot(booking, 2)}</td>
                 <td className="px-4 py-3 text-center">{renderSlot(booking, 3)}</td>

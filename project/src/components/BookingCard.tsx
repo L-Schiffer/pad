@@ -13,6 +13,10 @@ export function BookingCard({ booking, onSlotClick, onDelete, onRemoveFromSlot }
     const start = new Date(startTime);
     const end = new Date(endTime);
 
+    const weekday = start.toLocaleDateString('de-DE', {
+      weekday: 'long',
+    });
+
     const dateStr = start.toLocaleDateString('de-DE', {
       day: '2-digit',
       month: '2-digit',
@@ -29,7 +33,7 @@ export function BookingCard({ booking, onSlotClick, onDelete, onRemoveFromSlot }
       minute: '2-digit',
     });
 
-    return `${dateStr} ${startTimeStr}–${endTimeStr}`;
+    return `${weekday}, ${dateStr} ${startTimeStr}–${endTimeStr}`;
   };
 
   const handleDelete = () => {
@@ -56,6 +60,12 @@ export function BookingCard({ booking, onSlotClick, onDelete, onRemoveFromSlot }
           <div className="flex items-center gap-2 text-gray-600">
             <MapPin size={18} />
             <span>{booking.location}</span>
+          </div>
+          <div className="flex items-center gap-2 text-gray-700">
+            <span>Gebucht von: {booking.created_by}</span>
+          </div>
+          <div className="flex items-center gap-2 text-gray-900">
+            <span className="font-semibold">Kosten: {booking.cost}€</span>
           </div>
         </div>
         <button
