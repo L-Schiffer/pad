@@ -18,3 +18,16 @@ export type Booking = {
   created_at: string;
   cost: number;
 };
+
+export type BookingHistory = {
+  id: string;
+  booking_id: string;
+  action: 'created' | 'slot_filled' | 'slot_removed' | 'updated' | 'deleted';
+  changed_by: string | null;
+  slot_number: number | null;
+  slot_value: string | null;
+  field_name: string | null;
+  old_value: string | null;
+  new_value: string | null;
+  created_at: string;
+};

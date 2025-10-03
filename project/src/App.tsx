@@ -3,6 +3,7 @@ import { Plus } from 'lucide-react';
 import { supabase, Booking } from './lib/supabase';
 import { BookingModal } from './components/BookingModal';
 import { SlotModal } from './components/SlotModal';
+import { HistoryModal } from './components/HistoryModal';
 import { BookingTable } from './components/BookingTable';
 import { BookingCard } from './components/BookingCard';
 
@@ -10,7 +11,9 @@ function App() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isSlotModalOpen, setIsSlotModalOpen] = useState(false);
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<{ id: string; slotNumber: number } | null>(null);
+  const [selectedHistoryBooking, setSelectedHistoryBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPastBookings, setShowPastBookings] = useState(false);
 
@@ -161,6 +164,11 @@ function App() {
     }
   };
 
+  const handleShowHistory = (booking: Booking) => {
+    setSelectedHistoryBooking(booking);
+    setIsHistoryModalOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="container mx-auto px-4 py-8">
@@ -228,6 +236,7 @@ function App() {
                 onSlotClick={handleSlotClick}
                 onDelete={handleDeleteBooking}
                 onRemoveFromSlot={handleRemoveFromSlot}
+                onShowHistory={handleShowHistory}
               />
             </div>
 
@@ -244,6 +253,7 @@ function App() {
                     onSlotClick={handleSlotClick}
                     onDelete={handleDeleteBooking}
                     onRemoveFromSlot={handleRemoveFromSlot}
+                    onShowHistory={handleShowHistory}
                   />
                 ))
               )}
@@ -267,6 +277,17 @@ function App() {
         onSubmit={handleSlotSubmit}
         slotNumber={selectedBooking?.slotNumber || 1}
       />
+
+      {selectedHistoryBooking && (
+        <HistoryModal
+          isOpen={isHistoryModalOpen}
+          onClose={() => {
+            setIsHistoryModalOpen(false);
+            setSelectedHistoryBooking(null);
+          }}
+          booking={selectedHistoryBooking}
+        />
+      )}
     </div>
   );
 }

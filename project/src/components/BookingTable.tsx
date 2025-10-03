@@ -1,4 +1,4 @@
-import { Trash2, X } from 'lucide-react';
+import { Trash2, X, Info } from 'lucide-react';
 import { Booking } from '../lib/supabase';
 
 type BookingTableProps = {
@@ -6,9 +6,10 @@ type BookingTableProps = {
   onSlotClick: (bookingId: string, slotNumber: number) => void;
   onDelete: (bookingId: string) => void;
   onRemoveFromSlot: (bookingId: string, slotNumber: number) => void;
+  onShowHistory: (booking: Booking) => void;
 };
 
-export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot }: BookingTableProps) {
+export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot, onShowHistory }: BookingTableProps) {
   const formatDateTime = (startTime: string, endTime: string) => {
     const start = new Date(startTime);
     const end = new Date(endTime);
@@ -123,13 +124,22 @@ export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot
                   <td className="px-4 py-3 text-center">{renderSlot(booking, 3)}</td>
                   <td className="px-4 py-3 text-center">{renderSlot(booking, 4)}</td>
                   <td className="px-4 py-3 text-center">
-                    <button
-                      onClick={() => handleDelete(booking.id)}
-                      className="text-red-500 hover:text-red-700 transition-colors p-2"
-                      title="Eintrag löschen"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => onShowHistory(booking)}
+                        className="text-blue-500 hover:text-blue-700 transition-colors p-2"
+                        title="Historie anzeigen"
+                      >
+                        <Info size={18} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(booking.id)}
+                        className="text-red-500 hover:text-red-700 transition-colors p-2"
+                        title="Eintrag löschen"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );

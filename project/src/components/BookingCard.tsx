@@ -1,4 +1,4 @@
-import { Trash2, MapPin, Calendar, X } from 'lucide-react';
+import { Trash2, MapPin, Calendar, X, Info } from 'lucide-react';
 import { Booking } from '../lib/supabase';
 
 type BookingCardProps = {
@@ -6,9 +6,10 @@ type BookingCardProps = {
   onSlotClick: (bookingId: string, slotNumber: number) => void;
   onDelete: (bookingId: string) => void;
   onRemoveFromSlot: (bookingId: string, slotNumber: number) => void;
+  onShowHistory: (booking: Booking) => void;
 };
 
-export function BookingCard({ booking, onSlotClick, onDelete, onRemoveFromSlot }: BookingCardProps) {
+export function BookingCard({ booking, onSlotClick, onDelete, onRemoveFromSlot, onShowHistory }: BookingCardProps) {
   const formatDateTime = (startTime: string, endTime: string) => {
     const start = new Date(startTime);
     const end = new Date(endTime);
@@ -82,13 +83,22 @@ export function BookingCard({ booking, onSlotClick, onDelete, onRemoveFromSlot }
             <span className="font-semibold">Kosten: {booking.cost}€</span>
           </div>
         </div>
-        <button
-          onClick={handleDelete}
-          className="text-red-500 hover:text-red-700 transition-colors p-2"
-          title="Eintrag löschen"
-        >
-          <Trash2 size={20} />
-        </button>
+        <div className="flex flex-col gap-1">
+          <button
+            onClick={() => onShowHistory(booking)}
+            className="text-blue-500 hover:text-blue-700 transition-colors p-2"
+            title="Historie anzeigen"
+          >
+            <Info size={20} />
+          </button>
+          <button
+            onClick={handleDelete}
+            className="text-red-500 hover:text-red-700 transition-colors p-2"
+            title="Eintrag löschen"
+          >
+            <Trash2 size={20} />
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-2 pt-2">
