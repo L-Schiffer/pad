@@ -42,6 +42,18 @@ export function BookingCard({ booking, onSlotClick, onDelete, onRemoveFromSlot }
     }
   };
 
+  const getCardBackgroundColor = () => {
+    const filledSlots = [booking.slot_1, booking.slot_2, booking.slot_3, booking.slot_4].filter(slot => slot !== null).length;
+
+    if (filledSlots === 4) {
+      return 'bg-green-50 border-green-200';
+    } else if (filledSlots >= 2) {
+      return 'bg-yellow-50 border-yellow-200';
+    } else {
+      return 'bg-white';
+    }
+  };
+
   const slots = [
     { number: 1, name: booking.slot_1 },
     { number: 2, name: booking.slot_2 },
@@ -49,8 +61,10 @@ export function BookingCard({ booking, onSlotClick, onDelete, onRemoveFromSlot }
     { number: 4, name: booking.slot_4 },
   ];
 
+  const cardColor = getCardBackgroundColor();
+
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 space-y-3">
+    <div className={`rounded-lg shadow-md p-4 space-y-3 border ${cardColor}`}>
       <div className="flex justify-between items-start">
         <div className="space-y-2 flex-1">
           <div className="flex items-center gap-2 text-gray-700">

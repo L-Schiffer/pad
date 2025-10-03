@@ -42,6 +42,18 @@ export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot
     }
   };
 
+  const getBookingRowColor = (booking: Booking) => {
+    const filledSlots = [booking.slot_1, booking.slot_2, booking.slot_3, booking.slot_4].filter(slot => slot !== null).length;
+
+    if (filledSlots === 4) {
+      return 'bg-green-50 hover:bg-green-100';
+    } else if (filledSlots >= 2) {
+      return 'bg-yellow-50 hover:bg-yellow-100';
+    } else {
+      return 'hover:bg-gray-50';
+    }
+  };
+
   const renderSlot = (booking: Booking, slotNumber: number) => {
     const slotName = booking[`slot_${slotNumber}` as keyof Booking] as string | null;
 
@@ -96,29 +108,32 @@ export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot
               </td>
             </tr>
           ) : (
-            bookings.map((booking) => (
-              <tr key={booking.id} className="hover:bg-gray-50 transition-colors">
-                <td className="px-4 py-3 text-sm text-gray-900">
-                  {formatDateTime(booking.start_time, booking.end_time)}
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-700">{booking.location}</td>
-                <td className="px-4 py-3 text-sm text-gray-700">{booking.created_by}</td>
-                <td className="px-4 py-3 text-center text-sm font-semibold text-gray-900">{booking.cost}€</td>
-                <td className="px-4 py-3 text-center">{renderSlot(booking, 1)}</td>
-                <td className="px-4 py-3 text-center">{renderSlot(booking, 2)}</td>
-                <td className="px-4 py-3 text-center">{renderSlot(booking, 3)}</td>
-                <td className="px-4 py-3 text-center">{renderSlot(booking, 4)}</td>
-                <td className="px-4 py-3 text-center">
-                  <button
-                    onClick={() => handleDelete(booking.id)}
-                    className="text-red-500 hover:text-red-700 transition-colors p-2"
-                    title="Eintrag löschen"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </td>
-              </tr>
-            ))
+            bookings.map((booking) => {
+              const rowColor = getBookingRowColor(booking);
+              return (
+                <tr key={booking.id} className={`transition-colors ${rowColor}`}>
+                  <td className="px-4 py-3 text-sm text-gray-900">
+                    {formatDateTime(booking.start_time, booking.end_time)}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700">{booking.location}</td>
+                  <td className="px-4 py-3 text-sm text-gray-700">{booking.created_by}</td>
+                  <td className="px-4 py-3 text-center text-sm font-semibold text-gray-900">{booking.cost}€</td>
+                  <td className="px-4 py-3 text-center">{renderSlot(booking, 1)}</td>
+                  <td className="px-4 py-3 text-center">{renderSlot(booking, 2)}</td>
+                  <td className="px-4 py-3 text-center">{renderSlot(booking, 3)}</td>
+                  <td className="px-4 py-3 text-center">{renderSlot(booking, 4)}</td>
+                  <td className="px-4 py-3 text-center">
+                    <button
+                      onClick={() => handleDelete(booking.id)}
+                      className="text-red-500 hover:text-red-700 transition-colors p-2"
+                      title="Eintrag löschen"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })
           )}
         </tbody>
       </table>
