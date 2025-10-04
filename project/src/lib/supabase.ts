@@ -30,5 +30,7 @@ export type BookingHistory = {
   field_name: string | null;
   old_value: string | null;
   new_value: string | null;
+  deletion_reason: string | null;
+  deletion_details: string | null;
   created_at: string;
 };

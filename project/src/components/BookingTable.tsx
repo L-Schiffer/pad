@@ -39,9 +39,7 @@ export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot
   };
 
   const handleDelete = (bookingId: string) => {
-    if (confirm('Möchten Sie diesen Eintrag wirklich löschen?')) {
-      onDelete(bookingId);
-    }
+    onDelete(bookingId);
   };
 
   const getBookingRowColor = (booking: Booking) => {

@@ -108,6 +108,19 @@ export function HistoryModal({ isOpen, onClose, booking }: HistoryModalProps) {
           text: `${translatedField} geändert`,
           details: `Von "${formattedOldValue}" zu "${formattedNewValue}"`,
         };
+      case 'deleted':
+        let deletionDetails = 'Buchung wurde gelöscht';
+        if (entry.deletion_reason) {
+          deletionDetails = `Grund: ${entry.deletion_reason}`;
+          if (entry.deletion_details) {
+            deletionDetails += ` - ${entry.deletion_details}`;
+          }
+        }
+        return {
+          icon: <X className="text-red-500" size={16} />,
+          text: 'Buchung gelöscht',
+          details: deletionDetails,
+        };
       default:
         return {
           icon: <Clock className="text-gray-500" size={16} />,

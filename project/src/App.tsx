@@ -4,6 +4,7 @@ import { supabase, Booking } from './lib/supabase';
 import { BookingModal } from './components/BookingModal';
 import { SlotModal } from './components/SlotModal';
 import { HistoryModal } from './components/HistoryModal';
+import { DeletionModal } from './components/DeletionModal';
 import { BookingTable } from './components/BookingTable';
 import { BookingCard } from './components/BookingCard';
 
@@ -12,8 +13,10 @@ function App() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isSlotModalOpen, setIsSlotModalOpen] = useState(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+  const [isDeletionModalOpen, setIsDeletionModalOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<{ id: string; slotNumber: number } | null>(null);
   const [selectedHistoryBooking, setSelectedHistoryBooking] = useState<Booking | null>(null);
+  const [bookingToDelete, setBookingToDelete] = useState<Booking | null>(null);
   const [editBooking, setEditBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPastBookings, setShowPastBookings] = useState(false);
@@ -178,15 +181,39 @@ function App() {
     }
   };
 
-  const handleDeleteBooking = async (bookingId: string) => {
+  const handleDeleteBooking = (bookingId: string) => {
+    const booking = bookings.find(b => b.id === bookingId);
+    if (booking) {
+      setBookingToDelete(booking);
+      setIsDeletionModalOpen(true);
+    }
+  };
+
+  const handleConfirmDeletion = async (reason: string, details: string) => {
+    if (!bookingToDelete) return;
+
     try {
       // Soft delete: set deleted_at timestamp instead of actually deleting
       const { error } = await supabase
         .from('bookings')
         .update({ deleted_at: new Date().toISOString() })
-        .eq('id', bookingId);
+        .eq('id', bookingToDelete.id);
 
       if (error) throw error;
+
+      // Log deletion reason to history if provided
+      if (reason) {
+        await supabase.from('booking_history').insert({
+          booking_id: bookingToDelete.id,
+          action: 'deleted',
+          changed_by: bookingToDelete.created_by,
+          deletion_reason: reason,
+          deletion_details: details || null,
+        });
+      }
+
+      setIsDeletionModalOpen(false);
+      setBookingToDelete(null);
       fetchBookings(); // Daten nach dem Löschen neu laden
     } catch (error) {
       console.error('Error deleting booking:', error);
@@ -356,6 +383,23 @@ function App() {
             setSelectedHistoryBooking(null);
           }}
           booking={selectedHistoryBooking}
+        />
+      )}
+
+      {bookingToDelete && (
+        <DeletionModal
+          isOpen={isDeletionModalOpen}
+          onClose={() => {
+            setIsDeletionModalOpen(false);
+            setBookingToDelete(null);
+          }}
+          onConfirm={handleConfirmDeletion}
+          bookingInfo={`${bookingToDelete.location} - ${new Date(bookingToDelete.start_time).toLocaleDateString('de-DE', {
+            weekday: 'long',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          })}`}
         />
       )}
     </div>
