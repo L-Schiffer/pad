@@ -1,4 +1,4 @@
-import { Trash2, MapPin, Calendar, X, Info } from 'lucide-react';
+import { Trash2, MapPin, Calendar, X, Info, Edit } from 'lucide-react';
 import { Booking } from '../lib/supabase';
 
 type BookingCardProps = {
@@ -7,9 +7,10 @@ type BookingCardProps = {
   onDelete: (bookingId: string) => void;
   onRemoveFromSlot: (bookingId: string, slotNumber: number) => void;
   onShowHistory: (booking: Booking) => void;
+  onEdit: (booking: Booking) => void;
 };
 
-export function BookingCard({ booking, onSlotClick, onDelete, onRemoveFromSlot, onShowHistory }: BookingCardProps) {
+export function BookingCard({ booking, onSlotClick, onDelete, onRemoveFromSlot, onShowHistory, onEdit }: BookingCardProps) {
   const formatDateTime = (startTime: string, endTime: string) => {
     const start = new Date(startTime);
     const end = new Date(endTime);
@@ -90,6 +91,13 @@ export function BookingCard({ booking, onSlotClick, onDelete, onRemoveFromSlot, 
             title="Historie anzeigen"
           >
             <Info size={20} />
+          </button>
+          <button
+            onClick={() => onEdit(booking)}
+            className="text-gray-500 hover:text-gray-700 transition-colors p-2"
+            title="Eintrag bearbeiten"
+          >
+            <Edit size={20} />
           </button>
           <button
             onClick={handleDelete}

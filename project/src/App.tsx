@@ -14,6 +14,7 @@ function App() {
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<{ id: string; slotNumber: number } | null>(null);
   const [selectedHistoryBooking, setSelectedHistoryBooking] = useState<Booking | null>(null);
+  const [editBooking, setEditBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPastBookings, setShowPastBookings] = useState(false);
 
@@ -73,21 +74,39 @@ function App() {
     cost: number;
   }) => {
     try {
-      const { error } = await supabase.from('bookings').insert({
-        location: bookingData.location,
-        start_time: bookingData.startTime,
-        end_time: bookingData.endTime,
-        created_by: bookingData.createdBy,
-        slot_1: bookingData.addToSlot1 ? bookingData.createdBy : null,
-        cost: bookingData.cost,
-      });
+      if (editBooking) {
+        // Update existing booking
+        const { error } = await supabase
+          .from('bookings')
+          .update({
+            location: bookingData.location,
+            start_time: bookingData.startTime,
+            end_time: bookingData.endTime,
+            cost: bookingData.cost,
+          })
+          .eq('id', editBooking.id);
 
-      if (error) throw error;
+        if (error) throw error;
+      } else {
+        // Create new booking
+        const { error } = await supabase.from('bookings').insert({
+          location: bookingData.location,
+          start_time: bookingData.startTime,
+          end_time: bookingData.endTime,
+          created_by: bookingData.createdBy,
+          slot_1: bookingData.addToSlot1 ? bookingData.createdBy : null,
+          cost: bookingData.cost,
+        });
+
+        if (error) throw error;
+      }
+
       setIsBookingModalOpen(false);
-      fetchBookings(); // Daten nach dem Erstellen neu laden
+      setEditBooking(null);
+      fetchBookings(); // Daten nach dem Erstellen/Bearbeiten neu laden
     } catch (error) {
-      console.error('Error creating booking:', error);
-      alert('Fehler beim Erstellen des Eintrags');
+      console.error('Error creating/updating booking:', error);
+      alert(editBooking ? 'Fehler beim Bearbeiten des Eintrags' : 'Fehler beim Erstellen des Eintrags');
     }
   };
 
@@ -169,6 +188,11 @@ function App() {
     setIsHistoryModalOpen(true);
   };
 
+  const handleEditBooking = (booking: Booking) => {
+    setEditBooking(booking);
+    setIsBookingModalOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="container mx-auto px-4 py-8">
@@ -237,6 +261,7 @@ function App() {
                 onDelete={handleDeleteBooking}
                 onRemoveFromSlot={handleRemoveFromSlot}
                 onShowHistory={handleShowHistory}
+                onEdit={handleEditBooking}
               />
             </div>
 
@@ -254,6 +279,7 @@ function App() {
                     onDelete={handleDeleteBooking}
                     onRemoveFromSlot={handleRemoveFromSlot}
                     onShowHistory={handleShowHistory}
+                    onEdit={handleEditBooking}
                   />
                 ))
               )}
@@ -264,8 +290,12 @@ function App() {
 
       <BookingModal
         isOpen={isBookingModalOpen}
-        onClose={() => setIsBookingModalOpen(false)}
+        onClose={() => {
+          setIsBookingModalOpen(false);
+          setEditBooking(null);
+        }}
         onSubmit={handleCreateBooking}
+        editBooking={editBooking}
       />
 
       <SlotModal

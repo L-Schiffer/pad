@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { Booking } from '../lib/supabase';
 
 type BookingModalProps = {
   isOpen: boolean;
@@ -12,9 +13,10 @@ type BookingModalProps = {
     addToSlot1: boolean;
     cost: number;
   }) => void;
+  editBooking?: Booking | null;
 };
 
-export function BookingModal({ isOpen, onClose, onSubmit }: BookingModalProps) {
+export function BookingModal({ isOpen, onClose, onSubmit, editBooking }: BookingModalProps) {
   const [location, setLocation] = useState('Uni Köln');
   const [date, setDate] = useState('');
   const [startTime, setStartTime] = useState('');
@@ -23,6 +25,32 @@ export function BookingModal({ isOpen, onClose, onSubmit }: BookingModalProps) {
   const [addToSlot1, setAddToSlot1] = useState(true);
   const [cost, setCost] = useState(10);
   const [error, setError] = useState('');
+
+  // Populate form when editing
+  useEffect(() => {
+    if (editBooking) {
+      setLocation(editBooking.location);
+
+      const startDate = new Date(editBooking.start_time);
+      const endDate = new Date(editBooking.end_time);
+
+      setDate(startDate.toISOString().split('T')[0]);
+      setStartTime(startDate.toTimeString().slice(0, 5));
+      setEndTime(endDate.toTimeString().slice(0, 5));
+      setCreatedBy(editBooking.created_by);
+      setCost(editBooking.cost);
+      setAddToSlot1(!!editBooking.slot_1);
+    } else {
+      // Reset to defaults when creating new
+      setLocation('Uni Köln');
+      setDate('');
+      setStartTime('');
+      setEndTime('');
+      setCreatedBy('');
+      setAddToSlot1(true);
+      setCost(10);
+    }
+  }, [editBooking, isOpen]);
 
   if (!isOpen) return null;
 
@@ -81,7 +109,9 @@ export function BookingModal({ isOpen, onClose, onSubmit }: BookingModalProps) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
         <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold text-gray-900">Neuen Eintrag anlegen</h2>
+          <h2 className="text-xl font-semibold text-gray-900">
+            {editBooking ? 'Eintrag bearbeiten' : 'Neuen Eintrag anlegen'}
+          </h2>
           <button
             onClick={handleClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -225,13 +255,13 @@ export function BookingModal({ isOpen, onClose, onSubmit }: BookingModalProps) {
               onClick={handleClose}
               className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
             >
-              Abbrechen
+              {editBooking ? 'Verwerfen' : 'Abbrechen'}
             </button>
             <button
               type="submit"
               className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
             >
-              Erstellen
+              {editBooking ? 'Speichern' : 'Erstellen'}
             </button>
           </div>
         </form>
