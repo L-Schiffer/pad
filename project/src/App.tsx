@@ -32,9 +32,25 @@ function App() {
           schema: 'public',
           table: 'bookings',
         },
-        () => {
+        (payload) => {
           // Bei jeder Änderung Daten neu laden
           fetchBookings();
+
+          // Wenn ein Update stattfindet und das Slot-Modal offen ist
+          if (payload.eventType === 'UPDATE' && isSlotModalOpen && selectedBooking) {
+            const updatedBooking = payload.new as Booking;
+
+            // Prüfen ob der aktuell ausgewählte Slot nun belegt wurde
+            if (updatedBooking.id === selectedBooking.id) {
+              const slotKey = `slot_${selectedBooking.slotNumber}` as keyof Booking;
+              if (updatedBooking[slotKey] !== null) {
+                // Slot wurde von jemand anderem belegt
+                alert('Dieser Slot wurde gerade von jemand anderem belegt. Bitte wähle einen anderen Slot.');
+                setIsSlotModalOpen(false);
+                setSelectedBooking(null);
+              }
+            }
+          }
         }
       )
       .subscribe();
@@ -42,7 +58,7 @@ function App() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [showPastBookings, showDeletedBookings]);
+  }, [showPastBookings, showDeletedBookings, isSlotModalOpen, selectedBooking]);
 
   const fetchBookings = async () => {
     try {
