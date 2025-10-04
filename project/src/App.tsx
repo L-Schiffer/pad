@@ -399,6 +399,12 @@ function App() {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
+          })} ${new Date(bookingToDelete.start_time).toLocaleTimeString('de-DE', {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}–${new Date(bookingToDelete.end_time).toLocaleTimeString('de-DE', {
+            hour: '2-digit',
+            minute: '2-digit',
           })}`}
         />
       )}
