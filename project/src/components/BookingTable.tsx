@@ -99,7 +99,7 @@ export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot
             <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Datum</th>
             <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Ort</th>
             <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Gebucht von</th>
-            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Kosten</th>
+            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Preis pro Person</th>
             <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Slot 1</th>
             <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Slot 2</th>
             <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Slot 3</th>
@@ -131,7 +131,7 @@ export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-700">{booking.location}</td>
                   <td className="px-4 py-3 text-sm text-gray-700">{booking.created_by}</td>
-                  <td className="px-4 py-3 text-center text-sm font-semibold text-gray-900">{booking.cost}€</td>
+                  <td className="px-4 py-3 text-center text-sm font-semibold text-gray-900">{booking.cost.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}€</td>
                   <td className="px-4 py-3 text-center">{renderSlot(booking, 1)}</td>
                   <td className="px-4 py-3 text-center">{renderSlot(booking, 2)}</td>
                   <td className="px-4 py-3 text-center">{renderSlot(booking, 3)}</td>

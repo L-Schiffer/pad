@@ -52,7 +52,7 @@ export function HistoryModal({ isOpen, onClose, booking }: HistoryModalProps) {
       'location': 'Ort',
       'start_time': 'Startzeit',
       'end_time': 'Endzeit',
-      'cost': 'Kosten',
+      'cost': 'Preis pro Person',
       'created_by': 'Ersteller',
       'slot_1': 'Slot 1',
       'slot_2': 'Slot 2',
@@ -74,7 +74,7 @@ export function HistoryModal({ isOpen, onClose, booking }: HistoryModalProps) {
       });
     }
     if (fieldName === 'cost') {
-      return `${value}€`;
+      return `${Number(value).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}€`;
     }
     return value;
   };
@@ -85,7 +85,7 @@ export function HistoryModal({ isOpen, onClose, booking }: HistoryModalProps) {
         return {
           icon: <Calendar className="text-blue-500" size={16} />,
           text: 'Buchung erstellt',
-          details: `Ort: ${booking.location}, Kosten: ${booking.cost}€`,
+          details: `Ort: ${booking.location}, Preis pro Person: ${booking.cost.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}€`,
         };
       case 'slot_filled':
         return {

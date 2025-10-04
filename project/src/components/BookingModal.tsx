@@ -221,18 +221,21 @@ export function BookingModal({ isOpen, onClose, onSubmit, editBooking }: Booking
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Kosten
+              Preis pro Person
             </label>
             <select
               value={cost}
               onChange={(e) => setCost(Number(e.target.value))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {[10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map((amount) => (
-                <option key={amount} value={amount}>
-                  {amount}€
-                </option>
-              ))}
+              {Array.from({ length: 39 }, (_, i) => {
+                const amount = 1 + i * 0.5;
+                return (
+                  <option key={amount} value={amount}>
+                    {amount.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}€
+                  </option>
+                );
+              })}
             </select>
           </div>
 

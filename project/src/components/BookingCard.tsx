@@ -93,7 +93,7 @@ export function BookingCard({ booking, onSlotClick, onDelete, onRemoveFromSlot, 
             <span>Gebucht von: {booking.created_by}</span>
           </div>
           <div className="flex items-center gap-2 text-gray-900">
-            <span className="font-semibold">Kosten: {booking.cost}€</span>
+            <span className="font-semibold">Preis pro Person: {booking.cost.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}€</span>
           </div>
         </div>
         <div className="flex flex-col gap-1">
