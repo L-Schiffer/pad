@@ -45,6 +45,11 @@ export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot
   };
 
   const getBookingRowColor = (booking: Booking) => {
+    // Gelöschte Einträge haben Priorität bei der Darstellung
+    if (booking.deleted_at) {
+      return 'bg-red-50 opacity-60 hover:bg-red-100';
+    }
+
     const filledSlots = [booking.slot_1, booking.slot_2, booking.slot_3, booking.slot_4].filter(slot => slot !== null).length;
 
     if (filledSlots === 4) {
@@ -115,7 +120,14 @@ export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot
               return (
                 <tr key={booking.id} className={`transition-colors ${rowColor}`}>
                   <td className="px-4 py-3 text-sm text-gray-900">
-                    {formatDateTime(booking.start_time, booking.end_time)}
+                    <div className="flex items-center gap-2">
+                      {formatDateTime(booking.start_time, booking.end_time)}
+                      {booking.deleted_at && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-red-100 text-red-800 border border-red-300">
+                          GELÖSCHT
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-700">{booking.location}</td>
                   <td className="px-4 py-3 text-sm text-gray-700">{booking.created_by}</td>
@@ -133,20 +145,24 @@ export function BookingTable({ bookings, onSlotClick, onDelete, onRemoveFromSlot
                       >
                         <Info size={18} />
                       </button>
-                      <button
-                        onClick={() => onEdit(booking)}
-                        className="text-gray-500 hover:text-gray-700 transition-colors p-2"
-                        title="Eintrag bearbeiten"
-                      >
-                        <Edit size={18} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(booking.id)}
-                        className="text-red-500 hover:text-red-700 transition-colors p-2"
-                        title="Eintrag löschen"
-                      >
-                        <Trash2 size={18} />
-                      </button>
+                      {!booking.deleted_at && (
+                        <>
+                          <button
+                            onClick={() => onEdit(booking)}
+                            className="text-gray-500 hover:text-gray-700 transition-colors p-2"
+                            title="Eintrag bearbeiten"
+                          >
+                            <Edit size={18} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(booking.id)}
+                            className="text-red-500 hover:text-red-700 transition-colors p-2"
+                            title="Eintrag löschen"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>

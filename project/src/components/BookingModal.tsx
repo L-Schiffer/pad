@@ -159,7 +159,7 @@ export function BookingModal({ isOpen, onClose, onSubmit, editBooking }: Booking
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Startzeit (24h Format)
+                Startzeit
               </label>
               <select
                 value={startTime}
@@ -182,7 +182,7 @@ export function BookingModal({ isOpen, onClose, onSubmit, editBooking }: Booking
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Endzeit (24h Format)
+                Endzeit
               </label>
               <select
                 value={endTime}
@@ -236,18 +236,20 @@ export function BookingModal({ isOpen, onClose, onSubmit, editBooking }: Booking
             </select>
           </div>
 
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="addToSlot1"
-              checked={addToSlot1}
-              onChange={(e) => setAddToSlot1(e.target.checked)}
-              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-            />
-            <label htmlFor="addToSlot1" className="ml-2 text-sm text-gray-700">
-              Mich direkt in Slot 1 eintragen
-            </label>
-          </div>
+          {!editBooking && (
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="addToSlot1"
+                checked={addToSlot1}
+                onChange={(e) => setAddToSlot1(e.target.checked)}
+                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <label htmlFor="addToSlot1" className="ml-2 text-sm text-gray-700">
+                Mich direkt in Slot 1 eintragen
+              </label>
+            </div>
+          )}
 
           <div className="flex gap-3 pt-4">
             <button

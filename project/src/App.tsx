@@ -17,6 +17,7 @@ function App() {
   const [editBooking, setEditBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPastBookings, setShowPastBookings] = useState(false);
+  const [showDeletedBookings, setShowDeletedBookings] = useState(false);
 
   useEffect(() => {
     fetchBookings();
@@ -41,13 +42,18 @@ function App() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [showPastBookings]);
+  }, [showPastBookings, showDeletedBookings]);
 
   const fetchBookings = async () => {
     try {
       let query = supabase
         .from('bookings')
         .select('*');
+
+      // Nur nicht-gelöschte Einträge anzeigen, wenn Filter nicht aktiv
+      if (!showDeletedBookings) {
+        query = query.is('deleted_at', null);
+      }
 
       // Nur zukünftige Termine anzeigen, wenn Filter nicht aktiv
       if (!showPastBookings) {
@@ -158,7 +164,11 @@ function App() {
 
   const handleDeleteBooking = async (bookingId: string) => {
     try {
-      const { error } = await supabase.from('bookings').delete().eq('id', bookingId);
+      // Soft delete: set deleted_at timestamp instead of actually deleting
+      const { error } = await supabase
+        .from('bookings')
+        .update({ deleted_at: new Date().toISOString() })
+        .eq('id', bookingId);
 
       if (error) throw error;
       fetchBookings(); // Daten nach dem Löschen neu laden
@@ -235,16 +245,30 @@ function App() {
             <span className="font-medium">Neuen Eintrag anlegen</span>
           </button>
 
-          <div className="flex items-center gap-3 bg-white rounded-lg px-4 py-2 shadow-sm border border-gray-200">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={showPastBookings}
-                onChange={(e) => setShowPastBookings(e.target.checked)}
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
-              <span className="text-sm font-medium text-gray-700">Vergangene Termine anzeigen</span>
-            </label>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex items-center gap-3 bg-white rounded-lg px-4 py-2 shadow-sm border border-gray-200">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showPastBookings}
+                  onChange={(e) => setShowPastBookings(e.target.checked)}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span className="text-sm font-medium text-gray-700">Vergangene Termine</span>
+              </label>
+            </div>
+
+            <div className="flex items-center gap-3 bg-white rounded-lg px-4 py-2 shadow-sm border border-gray-200">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showDeletedBookings}
+                  onChange={(e) => setShowDeletedBookings(e.target.checked)}
+                  className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+                />
+                <span className="text-sm font-medium text-gray-700">Gelöschte Einträge</span>
+              </label>
+            </div>
           </div>
         </div>
 

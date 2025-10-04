@@ -45,6 +45,11 @@ export function BookingCard({ booking, onSlotClick, onDelete, onRemoveFromSlot, 
   };
 
   const getCardBackgroundColor = () => {
+    // Gelöschte Einträge haben Priorität bei der Darstellung
+    if (booking.deleted_at) {
+      return 'bg-red-50 border-red-300 opacity-60';
+    }
+
     const filledSlots = [booking.slot_1, booking.slot_2, booking.slot_3, booking.slot_4].filter(slot => slot !== null).length;
 
     if (filledSlots === 4) {
@@ -71,7 +76,14 @@ export function BookingCard({ booking, onSlotClick, onDelete, onRemoveFromSlot, 
         <div className="space-y-2 flex-1">
           <div className="flex items-center gap-2 text-gray-700">
             <Calendar size={18} />
-            <span className="font-medium">{formatDateTime(booking.start_time, booking.end_time)}</span>
+            <div className="flex items-center gap-2">
+              <span className="font-medium">{formatDateTime(booking.start_time, booking.end_time)}</span>
+              {booking.deleted_at && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-red-100 text-red-800 border border-red-300">
+                  GELÖSCHT
+                </span>
+              )}
+            </div>
           </div>
           <div className="flex items-center gap-2 text-gray-600">
             <MapPin size={18} />
@@ -92,20 +104,24 @@ export function BookingCard({ booking, onSlotClick, onDelete, onRemoveFromSlot, 
           >
             <Info size={20} />
           </button>
-          <button
-            onClick={() => onEdit(booking)}
-            className="text-gray-500 hover:text-gray-700 transition-colors p-2"
-            title="Eintrag bearbeiten"
-          >
-            <Edit size={20} />
-          </button>
-          <button
-            onClick={handleDelete}
-            className="text-red-500 hover:text-red-700 transition-colors p-2"
-            title="Eintrag löschen"
-          >
-            <Trash2 size={20} />
-          </button>
+          {!booking.deleted_at && (
+            <>
+              <button
+                onClick={() => onEdit(booking)}
+                className="text-gray-500 hover:text-gray-700 transition-colors p-2"
+                title="Eintrag bearbeiten"
+              >
+                <Edit size={20} />
+              </button>
+              <button
+                onClick={handleDelete}
+                className="text-red-500 hover:text-red-700 transition-colors p-2"
+                title="Eintrag löschen"
+              >
+                <Trash2 size={20} />
+              </button>
+            </>
+          )}
         </div>
       </div>
 

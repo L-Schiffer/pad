@@ -17,6 +17,7 @@ export type Booking = {
   created_by: string;
   created_at: string;
   cost: number;
+  deleted_at: string | null;
 };
 
 export type BookingHistory = {

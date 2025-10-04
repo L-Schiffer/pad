@@ -47,6 +47,38 @@ export function HistoryModal({ isOpen, onClose, booking }: HistoryModalProps) {
     });
   };
 
+  const translateFieldName = (fieldName: string): string => {
+    const translations: Record<string, string> = {
+      'location': 'Ort',
+      'start_time': 'Startzeit',
+      'end_time': 'Endzeit',
+      'cost': 'Kosten',
+      'created_by': 'Ersteller',
+      'slot_1': 'Slot 1',
+      'slot_2': 'Slot 2',
+      'slot_3': 'Slot 3',
+      'slot_4': 'Slot 4',
+    };
+    return translations[fieldName] || fieldName;
+  };
+
+  const formatValue = (fieldName: string, value: string): string => {
+    if (fieldName === 'start_time' || fieldName === 'end_time') {
+      const date = new Date(value);
+      return date.toLocaleString('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    }
+    if (fieldName === 'cost') {
+      return `${value}€`;
+    }
+    return value;
+  };
+
   const getActionText = (entry: BookingHistory) => {
     switch (entry.action) {
       case 'created':
@@ -68,10 +100,13 @@ export function HistoryModal({ isOpen, onClose, booking }: HistoryModalProps) {
           details: null,
         };
       case 'updated':
+        const translatedField = translateFieldName(entry.field_name || '');
+        const formattedOldValue = formatValue(entry.field_name || '', entry.old_value || '');
+        const formattedNewValue = formatValue(entry.field_name || '', entry.new_value || '');
         return {
           icon: <Clock className="text-orange-500" size={16} />,
-          text: `${entry.field_name} geändert`,
-          details: `Von "${entry.old_value}" zu "${entry.new_value}"`,
+          text: `${translatedField} geändert`,
+          details: `Von "${formattedOldValue}" zu "${formattedNewValue}"`,
         };
       default:
         return {
