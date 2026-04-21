@@ -17,7 +17,7 @@ type BookingModalProps = {
 };
 
 export function BookingModal({ isOpen, onClose, onSubmit, editBooking }: BookingModalProps) {
-  const [location, setLocation] = useState('Uni Köln');
+  const [location, setLocation] = useState('Universität zu Köln - Lindenthal');
   const [date, setDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
@@ -42,7 +42,7 @@ export function BookingModal({ isOpen, onClose, onSubmit, editBooking }: Booking
       setAddToSlot1(!!editBooking.slot_1);
     } else {
       // Reset to defaults when creating new
-      setLocation('Uni Köln');
+      setLocation('Universität zu Köln - Lindenthal');
       setDate('');
       setStartTime('');
       setEndTime('');
@@ -90,7 +90,7 @@ export function BookingModal({ isOpen, onClose, onSubmit, editBooking }: Booking
       cost,
     });
 
-    setLocation('Uni Köln');
+    setLocation('Universität zu Köln - Lindenthal');
     setDate('');
     setStartTime('');
     setEndTime('');
@@ -136,9 +136,12 @@ export function BookingModal({ isOpen, onClose, onSubmit, editBooking }: Booking
               onChange={(e) => setLocation(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="Padelbox Weiden">Padelbox Weiden</option>
-              <option value="Padelbox Lövenich">Padelbox Lövenich</option>
-              <option value="Uni Köln">Uni Köln</option>
+              <option value="Padelbox - Weiden">Padelbox - Weiden</option>
+              <option value="Padelbox - Lövenich">Padelbox - Lövenich</option>
+              <option value="Universität zu Köln - Lindenthal">Universität zu Köln - Lindenthal</option>
+              <option value="Padelbox - Widdersdorf">Padelbox - Widdersdorf</option>
+              <option value="The Cube - Mülheim">The Cube - Mülheim</option>
+              <option value="Mitte Padel - Ehrenfeld">Mitte Padel - Ehrenfeld</option>
             </select>
           </div>
 
